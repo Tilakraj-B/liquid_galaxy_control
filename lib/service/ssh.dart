@@ -514,7 +514,6 @@ class SSH {
       await client!.run("echo '' > /tmp/query.txt");
       await client!.run("echo '' > /var/www/html/kmls.txt");
     } catch (e) {
-      // logMessage.LogPrint(method: "cleanKML", message: "Error Occured : $e");
       await cleanKML();
     }
   }

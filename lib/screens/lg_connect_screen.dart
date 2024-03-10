@@ -17,7 +17,6 @@ class LGConnectScreen extends StatefulWidget {
 }
 
 class _LGConnectScreenState extends State<LGConnectScreen> {
-  bool showPassword = false;
   bool isConnected = false;
   final toast = FToast();
   TextEditingController ipController = TextEditingController();
@@ -100,6 +99,10 @@ class _LGConnectScreenState extends State<LGConnectScreen> {
       child: Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
+          leading: BackButton(
+            color: Colors.white,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           centerTitle: true,
           backgroundColor: Colors.black,
           title: Container(
@@ -202,7 +205,7 @@ class _LGConnectScreenState extends State<LGConnectScreen> {
                                           child: Container(
                                         color: Colors.red,
                                         child: const Text(
-                                          "Fialed to Connect",
+                                          "Failed to Connect",
                                           style: TextStyle(color: Colors.white),
                                         ),
                                       ));

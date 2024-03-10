@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -93,7 +94,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                       leadingIcon: Icons.restart_alt,
                                       label: "Reboot LG",
                                       onPressed: () async {
-                                        await ssh.restartLG(toast);
+                                        AwesomeDialog(
+                                          context: context,
+                                          dialogType: DialogType.warning,
+                                          animType: AnimType.rightSlide,
+                                          title: 'Reboot Liquid Galaxy',
+                                          desc:
+                                              'Reboot the three Liquid Galaxies',
+                                          btnCancelOnPress: () {},
+                                          btnOkOnPress: () async {
+                                            await ssh.restartLG(toast);
+                                          },
+                                        )..show();
                                       }),
                                   LargeButton(
                                       label: "Go Home",
@@ -173,6 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: const EdgeInsets.all(10.0),
                             child: Container(
                               child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
                                     "Status : ",
@@ -201,10 +214,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: LargeButton(
                               label: "Connection Manager",
                               onPressed: () {
-                                Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            LGConnectScreen()));
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => LGConnectScreen()));
                               },
                             ),
                           ),
@@ -360,10 +371,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: LargeButton(
                               label: "Connection Manager",
                               onPressed: () {
-                                Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            LGConnectScreen()));
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => LGConnectScreen()));
                               },
                             ),
                           ),
