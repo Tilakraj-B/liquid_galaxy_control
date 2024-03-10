@@ -4,8 +4,9 @@ import 'package:dartssh2/dartssh2.dart'
     show SSHClient, SSHSession, SSHSocket, SftpFileOpenMode;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:liquid_galaxy_control/entities/orbit_entity.dart';
 import 'package:liquid_galaxy_control/info_dialog_provider.dart';
-import 'package:liquid_galaxy_control/orbit_entity.dart';
+import 'package:liquid_galaxy_control/models/orbit_model.dart';
 import 'package:liquid_galaxy_control/utils/utils.dart';
 import 'package:liquid_galaxy_control/widgets/toast_widget.dart';
 import 'package:path_provider/path_provider.dart';
@@ -334,8 +335,13 @@ class SSH {
 
       //await cleanKML();
 
-      String orbitKML = OrbitEntity.buildOrbit(OrbitEntity.tag(LookingAtEntity(
-          lng: 86.427040, lat: 23.795399, range: 7000, tilt: 60, heading: 0)));
+      LookingAtEntity lookingAtEntity = LookingAtEntity(
+          lng: 86.427040, lat: 23.795399, range: 7000, tilt: 60, heading: 0);
+      String orbitKML = OrbitModel(OrbitEntity(
+        lookingAtEntity
+      )).buildOrbit();
+      // String orbitKML = OrbitEntity.buildOrbit(OrbitEntity.tag(LookingAtEntity(
+      //     lng: 86.427040, lat: 23.795399, range: 7000, tilt: 60, heading: 0)));
 
       File inputFile = await createFile(toast, "OrbitKML", orbitKML);
       await uploadKMLFile(toast, inputFile, "OrbitKML", "Task_Orbit");
