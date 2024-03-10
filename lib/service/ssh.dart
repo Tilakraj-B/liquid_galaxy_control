@@ -50,6 +50,7 @@ class SSH {
                 Icons.error,
                 color: Colors.red,
               )));
+      logMessage.LogPrint(message: "Error : $e");
       return false;
     }
   }
