@@ -111,6 +111,49 @@ class SSH {
     }
   }
 
+  startOrbit() async {
+    try {
+      await client!.run('echo "playtour=Orbit" > /tmp/query.txt');
+    } catch (e) {
+      // logMessage.LogPrint(method: "startOrbit", message: "Error Occured : $e");
+      stopOrbit();
+    }
+  }
+
+  Future<void> rightScreenInfoDialog(FToast toast) async {
+    try {
+      if (client == null) {
+        logMessage.LogPrint(
+            method: "startOrbiting", message: "Client : $client");
+        toast.showToast(
+            child: ToastWidget(
+                "No Connection",
+                Icon(
+                  Icons.error,
+                  color: Colors.red,
+                )));
+        return;
+      }
+      int totalScreen = int.parse(noOfRigs);
+      int rightMostScreen = (totalScreen / 2).floor() + 1;
+      toast.showToast(
+          child: ToastWidget("Showing Info Dialog", Icon(Icons.chat_bubble)));
+      final executeResult = await client!.execute(
+          "echo '${InfoDialogProvider.dialog()}' > /var/www/html/kml/slave_$rightMostScreen.kml");
+      print(executeResult);
+      //fToast.showToast(child: getToastWidget(executeResult.toString(), Colors.grey, Icons.cable));
+    } catch (e) {
+      toast.showToast(
+          child: ToastWidget(
+              "Error : $e",
+              Icon(
+                Icons.error,
+                color: Colors.red,
+              )));
+      logMessage.LogPrint(method: "loadKML", message: "Error Occured : $e");
+    }
+  }
+
   Future<SSHSession?> relaunchLG(FToast toast) async {
     try {
       int i = 1;
@@ -337,9 +380,7 @@ class SSH {
 
       LookingAtEntity lookingAtEntity = LookingAtEntity(
           lng: 86.427040, lat: 23.795399, range: 7000, tilt: 60, heading: 0);
-      String orbitKML = OrbitModel(OrbitEntity(
-        lookingAtEntity
-      )).buildOrbit();
+      String orbitKML = OrbitModel(OrbitEntity(lookingAtEntity)).buildOrbit();
       // String orbitKML = OrbitEntity.buildOrbit(OrbitEntity.tag(LookingAtEntity(
       //     lng: 86.427040, lat: 23.795399, range: 7000, tilt: 60, heading: 0)));
 
@@ -439,54 +480,11 @@ class SSH {
     }
   }
 
-  Future<void> rightScreenInfoDialog(FToast toast) async {
-    try {
-      if (client == null) {
-        logMessage.LogPrint(
-            method: "startOrbiting", message: "Client : $client");
-        toast.showToast(
-            child: ToastWidget(
-                "No Connection",
-                Icon(
-                  Icons.error,
-                  color: Colors.red,
-                )));
-        return;
-      }
-      int totalScreen = int.parse(noOfRigs);
-      int rightMostScreen = (totalScreen / 2).floor() + 1;
-      toast.showToast(
-          child: ToastWidget("Showing Info Dialog", Icon(Icons.chat_bubble)));
-      final executeResult = await client!.execute(
-          "echo '${InfoDialogProvider.dialog()}' > /var/www/html/kml/slave_$rightMostScreen.kml");
-      print(executeResult);
-      //fToast.showToast(child: getToastWidget(executeResult.toString(), Colors.grey, Icons.cable));
-    } catch (e) {
-      toast.showToast(
-          child: ToastWidget(
-              "Error : $e",
-              Icon(
-                Icons.error,
-                color: Colors.red,
-              )));
-      logMessage.LogPrint(method: "loadKML", message: "Error Occured : $e");
-    }
-  }
-
   stopOrbit() async {
     try {
       await client!.run('echo "exittour=true" > /tmp/query.txt');
     } catch (e) {
       // logMessage.LogPrint(method: "stopOrbit", message: "Error Occured : $e");
-      stopOrbit();
-    }
-  }
-
-  startOrbit() async {
-    try {
-      await client!.run('echo "playtour=Orbit" > /tmp/query.txt');
-    } catch (e) {
-      // logMessage.LogPrint(method: "startOrbit", message: "Error Occured : $e");
       stopOrbit();
     }
   }
