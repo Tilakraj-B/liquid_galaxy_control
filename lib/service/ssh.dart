@@ -111,12 +111,80 @@ class SSH {
     }
   }
 
-  startOrbit() async {
+  Future<void> startOrbiting(FToast toast) async {
     try {
-      await client!.run('echo "playtour=Orbit" > /tmp/query.txt');
+      if (client == null) {
+        logMessage.LogPrint(
+            method: "startOrbiting", message: "Client : $client");
+        toast.showToast(
+            child: ToastWidget(
+                "No Connection",
+                Icon(
+                  Icons.error,
+                  color: Colors.red,
+                )));
+        return;
+      }
+
+      //await cleanKML();
+
+      LookingAtEntity lookingAtEntity = LookingAtEntity(
+          lng: 86.427040, lat: 23.795399, range: 7000, tilt: 60, heading: 0);
+      String orbitKML = OrbitModel(OrbitEntity(lookingAtEntity)).buildOrbit();
+      // String orbitKML = OrbitEntity.buildOrbit(OrbitEntity.tag(LookingAtEntity(
+      //     lng: 86.427040, lat: 23.795399, range: 7000, tilt: 60, heading: 0)));
+
+      File inputFile = await createFile(toast, "OrbitKML", orbitKML);
+      await uploadKMLFile(toast, inputFile, "OrbitKML", "Task_Orbit");
     } catch (e) {
-      // logMessage.LogPrint(method: "startOrbit", message: "Error Occured : $e");
-      stopOrbit();
+      toast.showToast(
+          child: ToastWidget(
+              "Error : $e",
+              Icon(
+                Icons.error,
+                color: Colors.red,
+              )));
+      logMessage.LogPrint(
+          method: "startOrbiting", message: "Error Occured : $e");
+    }
+  }
+
+  String orbitLookAtLinear(double latitude, double longitude, double zoom,
+      double tilt, double bearing) {
+    return '<gx:duration>1.2</gx:duration><gx:flyToMode>smooth</gx:flyToMode><LookAt><longitude>$longitude</longitude><latitude>$latitude</latitude><range>$zoom</range><tilt>$tilt</tilt><heading>$bearing</heading><gx:altitudeMode>relativeToGround</gx:altitudeMode></LookAt>';
+  }
+
+  Future<SSHSession?> flyToOrbit(FToast toast, double latitude,
+      double longitude, double zoom, double tilt, double bearing) async {
+    try {
+      if (client == null) {
+        logMessage.LogPrint(method: "search", message: "Client : $client");
+        toast.showToast(
+            child: ToastWidget(
+                "No Connection",
+                Icon(
+                  Icons.error,
+                  color: Colors.red,
+                )));
+        return null;
+      }
+
+      final executeResult = await client!.execute(
+          'echo "flytoview=${orbitLookAtLinear(latitude, longitude, zoom, tilt, bearing)}" > /tmp/query.txt');
+      logMessage.LogPrint(
+          method: "flyToOrbit", message: "executeResult : $executeResult");
+      toast.showToast(child: ToastWidget(executeResult.toString(), null));
+      return executeResult;
+    } catch (e) {
+      toast.showToast(
+          child: ToastWidget(
+              "Error : $e",
+              Icon(
+                Icons.error,
+                color: Colors.red,
+              )));
+      logMessage.LogPrint(method: "flyToOrbit", message: "Error Occured : $e");
+      return null;
     }
   }
 
@@ -141,7 +209,6 @@ class SSH {
       final executeResult = await client!.execute(
           "echo '${InfoDialogProvider.dialog()}' > /var/www/html/kml/slave_$rightMostScreen.kml");
       print(executeResult);
-      //fToast.showToast(child: getToastWidget(executeResult.toString(), Colors.grey, Icons.cable));
     } catch (e) {
       toast.showToast(
           child: ToastWidget(
@@ -290,45 +357,6 @@ class SSH {
     }
   }
 
-  String orbitLookAtLinear(double latitude, double longitude, double zoom,
-      double tilt, double bearing) {
-    return '<gx:duration>1.2</gx:duration><gx:flyToMode>smooth</gx:flyToMode><LookAt><longitude>$longitude</longitude><latitude>$latitude</latitude><range>$zoom</range><tilt>$tilt</tilt><heading>$bearing</heading><gx:altitudeMode>relativeToGround</gx:altitudeMode></LookAt>';
-  }
-
-  Future<SSHSession?> flyToOrbit(FToast toast, double latitude,
-      double longitude, double zoom, double tilt, double bearing) async {
-    try {
-      if (client == null) {
-        logMessage.LogPrint(method: "search", message: "Client : $client");
-        toast.showToast(
-            child: ToastWidget(
-                "No Connection",
-                Icon(
-                  Icons.error,
-                  color: Colors.red,
-                )));
-        return null;
-      }
-
-      final executeResult = await client!.execute(
-          'echo "flytoview=${orbitLookAtLinear(latitude, longitude, zoom, tilt, bearing)}" > /tmp/query.txt');
-      logMessage.LogPrint(
-          method: "flyToOrbit", message: "executeResult : $executeResult");
-      toast.showToast(child: ToastWidget(executeResult.toString(), null));
-      return executeResult;
-    } catch (e) {
-      toast.showToast(
-          child: ToastWidget(
-              "Error : $e",
-              Icon(
-                Icons.error,
-                color: Colors.red,
-              )));
-      logMessage.LogPrint(method: "flyToOrbit", message: "Error Occured : $e");
-      return null;
-    }
-  }
-
   Future<void> infoDialogAtHome(FToast toast) async {
     try {
       if (client == null) {
@@ -358,44 +386,6 @@ class SSH {
               )));
       logMessage.LogPrint(
           method: "infoDialogAtHome", message: "Error Occured : $e");
-    }
-  }
-
-  Future<void> startOrbiting(FToast toast) async {
-    try {
-      if (client == null) {
-        logMessage.LogPrint(
-            method: "startOrbiting", message: "Client : $client");
-        toast.showToast(
-            child: ToastWidget(
-                "No Connection",
-                Icon(
-                  Icons.error,
-                  color: Colors.red,
-                )));
-        return;
-      }
-
-      //await cleanKML();
-
-      LookingAtEntity lookingAtEntity = LookingAtEntity(
-          lng: 86.427040, lat: 23.795399, range: 7000, tilt: 60, heading: 0);
-      String orbitKML = OrbitModel(OrbitEntity(lookingAtEntity)).buildOrbit();
-      // String orbitKML = OrbitEntity.buildOrbit(OrbitEntity.tag(LookingAtEntity(
-      //     lng: 86.427040, lat: 23.795399, range: 7000, tilt: 60, heading: 0)));
-
-      File inputFile = await createFile(toast, "OrbitKML", orbitKML);
-      await uploadKMLFile(toast, inputFile, "OrbitKML", "Task_Orbit");
-    } catch (e) {
-      toast.showToast(
-          child: ToastWidget(
-              "Error : $e",
-              Icon(
-                Icons.error,
-                color: Colors.red,
-              )));
-      logMessage.LogPrint(
-          method: "startOrbiting", message: "Error Occured : $e");
     }
   }
 
@@ -520,6 +510,15 @@ class SSH {
       await client!.run("echo '' > /var/www/html/kmls.txt");
     } catch (e) {
       await cleanKML();
+    }
+  }
+
+  startOrbit() async {
+    try {
+      await client!.run('echo "playtour=Orbit" > /tmp/query.txt');
+    } catch (e) {
+      // logMessage.LogPrint(method: "startOrbit", message: "Error Occured : $e");
+      stopOrbit();
     }
   }
 }
