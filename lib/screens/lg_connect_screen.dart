@@ -88,6 +88,12 @@ class _LGConnectScreenState extends State<LGConnectScreen> {
     });
   }
 
+  void changeConnectionState() {
+    setState(() {
+      isConnected = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -188,28 +194,27 @@ class _LGConnectScreenState extends State<LGConnectScreen> {
                                   logMessage.LogPrint(
                                       method: "Connect To LG",
                                       message: "result : $result");
-                                  setState() {
-                                    if (result == true) {
-                                      isConnected = true;
-                                      toast.showToast(
-                                          child: Container(
-                                        color: Colors.green,
-                                        child: const Text(
-                                          "Connected",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ));
-                                    } else {
-                                      isConnected = false;
-                                      toast.showToast(
-                                          child: Container(
-                                        color: Colors.red,
-                                        child: const Text(
-                                          "Failed to Connect",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ));
-                                    }
+
+                                  if (result == true) {
+                                    changeConnectionState();
+                                    toast.showToast(
+                                        child: Container(
+                                      color: Colors.green,
+                                      child: const Text(
+                                        "Connected",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ));
+                                  } else {
+                                    isConnected = false;
+                                    toast.showToast(
+                                        child: Container(
+                                      color: Colors.red,
+                                      child: const Text(
+                                        "Failed to Connect",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ));
                                   }
                                 }
                               }),

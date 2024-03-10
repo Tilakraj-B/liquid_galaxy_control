@@ -8,7 +8,7 @@ class InfoDialogProvider {
                   <name>Splash Screen</name>
                   <ScreenOverlay>
                       <name>Logo</name>
-                      <Icon><href>https://raw.githubusercontent.com/SatwikMohan/liquid_galaxy_tasks/master/assets/images/image.png</href> </Icon>
+                      <Icon><href>https://raw.githubusercontent.com/Tilakraj-B/liquid_galaxy_control/main/assets/images/info_dialog.png</href> </Icon>
                       <overlayXY x="0" y="1" xunits="fraction" yunits="fraction"/>
                       <screenXY x="0.025" y="0.95" xunits="fraction" yunits="fraction"/>
                       <rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>

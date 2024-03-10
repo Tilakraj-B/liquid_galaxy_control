@@ -370,9 +370,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: const EdgeInsets.all(10.0),
                             child: LargeButton(
                               label: "Connection Manager",
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => LGConnectScreen()));
+                              onPressed: () async {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(
+                                        builder: (context) =>
+                                            LGConnectScreen()))
+                                    .then((value) {
+                                  initState();
+                                });
                               },
                             ),
                           ),
