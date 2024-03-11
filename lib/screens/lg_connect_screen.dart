@@ -1,6 +1,7 @@
 import 'package:dartssh2/dartssh2.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:liquid_galaxy_control/screens/home_screen.dart';
 import 'package:liquid_galaxy_control/utils/utils.dart';
 import 'package:liquid_galaxy_control/widgets/buttons.dart';
 import 'package:liquid_galaxy_control/widgets/textfield.dart';
@@ -107,7 +108,8 @@ class _LGConnectScreenState extends State<LGConnectScreen> {
         appBar: AppBar(
           leading: BackButton(
             color: Colors.white,
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => HomeScreen())),
           ),
           centerTitle: true,
           backgroundColor: Colors.black,
